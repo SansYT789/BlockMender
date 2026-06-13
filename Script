@@ -12,7 +12,26 @@ do
     end
 end
 
+local function notify(title, content, icon)
+    if WindUI and WindUI.Notify then
+        WindUI:Notify({
+            Title = title,
+            Content = content,
+            Duration = 5,
+            Icon = icon or "warning"
+        })
+    else
+        warn(title .. ": " .. content)
+    end
+end
+
 local Tag = Games[game.PlaceId] or Games[game.GameId]
+
+if not Tag then
+    notify("Unsupported Game", "This game is not supported yet.", "alert-triangle")
+    return
+end
+
 local URL = "https://block-mender-api.vercel.app/api/load?id=" .. Tag
 
 local ok, err = pcall(function()
@@ -22,18 +41,13 @@ local ok, err = pcall(function()
         error("Empty response")
     end
 
+    if code:sub(1, 2) == "--" then
+        error(code)
+    end
+
     loadstring(code)()
 end)
 
 if not ok then
-    warn("Loader failed:", err)
-
-    if WindUI and WindUI.Notify then
-        WindUI:Notify({
-            Title = "Error",
-            Content = tostring(err),
-            Duration = 5,
-            Icon = "warning"
-        })
-    end
+    notify("Loader Error", tostring(err))
 end
