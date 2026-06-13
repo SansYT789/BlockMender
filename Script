@@ -1,4 +1,5 @@
 local HttpGet = game.HttpGet
+local Games = loadstring(game:HttpGet("https://raw.githubusercontent.com/SansYT789/BlockMender/main/ListGame.lua"))()
 
 local WindUI
 do
@@ -11,11 +12,11 @@ do
     end
 end
 
-local id = game.PlaceId or game.GameId
-local url = "https://block-mender-api.vercel.app/api/load?id=" .. id
+local Tag = Games[game.PlaceId] or Games[game.GameId]
+local URL = "https://block-mender-api.vercel.app/api/load?id=" .. Tag
 
 local ok, err = pcall(function()
-    local code = HttpGet(game, url)
+    local code = HttpGet(game, URL)
 
     if not code or code == "" then
         error("Empty response")
