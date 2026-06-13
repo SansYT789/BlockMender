@@ -1,1 +1,50 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Vinreach/MangoHub-Script/refs/heads/main/MangoHub-Load.lua"))()
+local HttpGet = game.HttpGet
+local Games = loadstring(HttpGet(game,"https://raw.githubusercontent.com/SansYT789/BlockMender/refs/heads/main/Loader/List/game.lua"))()
+
+local WindUI
+do
+    local ok, result = pcall(function()
+        return loadstring(HttpGet(game,"https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+    end)
+
+    if ok then
+        WindUI = result
+    else
+        warn("Dialog failed to load:", result)
+    end
+end
+
+local Tag = Games[game.PlaceId] or Games[game.GameId]
+
+if WindUI and WindUI.Notify then
+    WindUI:Notify({
+        Title = Tag and "Supported Game" or "Not Supported",
+        Content = Tag and "Detected game!" or "Your current game is not supported.",
+        Duration = 5,
+        Icon = Tag and "check" or "warning"
+    })
+end
+if not Tag then
+    return warn("Unsupported Game")
+end
+
+local ScriptURL =
+    "https://raw.githubusercontent.com/Vinreach/MangoHub-Script/refs/heads/main/Loader/"
+    .. Tag
+    .. ".lua"
+
+local ok, err = pcall(function()
+    loadstring(HttpGet(game, ScriptURL))()
+end)
+
+if not ok then
+    warn("Loader Hub Failed:", err)
+    if WindUI and WindUI.Notify then
+        WindUI:Notify({
+            Title = "Error Script",
+            Content = tostring(err),
+            Duration = 5,
+            Icon = "warning"
+        })
+    end
+end
