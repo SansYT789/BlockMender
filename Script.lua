@@ -28,6 +28,8 @@ local function notify(title, content, icon)
     end
 end
 
+notify("Loading", "Script is loading, please wait.", "info")
+
 local Tag = Games[game.PlaceId] or Games[game.GameId]
 local Name = "Unknown"
 pcall(function()
